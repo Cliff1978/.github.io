@@ -7,12 +7,13 @@
   <!-- Load Courier Prime (400,700) -->
   <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    :root { --ink:#3F2A2D; --bg:#ffffff; --accent:#FFB6A5; }
-    body{ margin:0; background:var(--bg); color:var(--ink); font-family:"Courier Prime",Courier,monospace; }
-    .wrap{ max-width:980px; margin:36px auto 72px; padding:0 24px; }
+    :root { --ink:#3F2A2D; --bg:#fde1dd; --accent:#FFB6A5; }
+    html, body { height: 100%; margin: 0; }
+    body{ background:var(--bg); color:var(--ink); font-family:"Courier Prime",Courier,monospace; display:flex; justify-content:center; }
+    .wrap{ background:#fff; padding:0 40px; max-width:980px; width:100%; box-sizing:border-box; min-height:100%; }
 
     /* Form */
-    .form{ padding:0; }
+    .form{ padding:36px 0; }
     .brand{ margin-bottom:18px }
     .brand img{ display:block; height:62px }
     .grid{ display:grid; grid-template-columns:1fr; gap:14px }
