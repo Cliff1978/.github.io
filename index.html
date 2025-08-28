@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Frank Body — Email Signature Generator</title>
+  <!-- Load Courier Prime (400,700) -->
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --ink:#3F2A2D; --bg:#ffffff; --accent:#FFB6A5; }
+    body{ margin:0; background:var(--bg); color:var(--ink); font-family:"Courier Prime","Courier New",monospace; }
+    .wrap{ max-width:980px; margin:36px auto 72px; padding:0 24px; }
+
+    /* Form */
+    .form{ padding:0; }
+    .brand{ margin-bottom:18px }
+    .brand img{ display:block; height:62px }
+    .grid{ display:grid; grid-template-columns:1fr; gap:14px }
+    .fld{ border:1px solid var(--ink); padding:16px 14px; background:#fff; outline:none; width:100%; box-sizing:border-box; font-family:"Courier Prime","Courier New",monospace; color:var(--ink); font-size:17px }
+    .fld::placeholder{ color:var(--ink); opacity:.7; font-family:"Courier Prime","Courier New",monospace; font-size:17px }
+    .btn{ background:var(--ink); color:#fff; border:1px solid var(--ink); padding:16px 18px; cursor:pointer; letter-spacing:.12em; text-transform:capitalize; font-weight:400; font-family:"Courier Prime","Courier New",monospace; transition:background .15s ease; font-size:17px; box-sizing:border-box; display:inline-block; text-align:center; width:300px; }
+    .btn:hover{ background:var(--accent); border:1px solid var(--accent); }
+    .btn:active{ transform:none; }
+
+    /* Preview */
+    .panel{ border:1px solid var(--ink); padding:18px; background:#fff; margin-top:22px }
+    .subtitle{ opacity:.85; font-size:14px; margin:0 0 8px }
+    .preview{ background:#fff; padding:24px; border:1px dashed var(--ink) }
+    .actions{ display:flex; gap:12px; flex-wrap:wrap; margin-top:12px; justify-content:flex-start; }
+    .note{ font-size:13px; opacity:.85; line-height:1.45 }
+
+    /* Links in signature */
+    .sig-link { color:#3F2A2D; text-decoration:none; }
+    .sig-link:hover { text-decoration:underline; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="form">
+      <div class="brand">
+        <img src="https://www.frankbody.com/sig/sig_2.gif" alt="frank body" />
+      </div>
+      <div class="grid">
+        <input id="name" class="fld" type="text" placeholder="Name" />
+        <input id="title" class="fld" type="text" placeholder="Company Position" />
+        <input id="phone" class="fld" type="text" placeholder="Phone (International format: +61 400 000 000)" />
+        <input id="email" class="fld" type="email" placeholder="Email" />
+        <button id="gen" class="btn">Generate Signature</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="subtitle">Preview</p>
+      <div id="sigPreview" class="preview" aria-live="polite"></div>
+      <div class="actions">
+        <button id="copyRich" class="btn">Copy Signature</button>
+      </div>
+      <p class="note">Gmail: paste in <b>Settings → See all settings → General → Signature</b>. If “--” appears above the signature, delete it after pasting.</p>
+    </div>
+  </div>
+
+  <script>
+    const el = (id)=>document.getElementById(id);
+
+    const FIXED = {
+      addressLine1: "Level 1 / 569 Church st,",
+      addressLine2: "Richmond, VIC 3121 AUSTRALIA",
+      handle: "@frank_bod",
+      website: "WWW.FRANKBODY.COM"
+    };
+
+    const DISCLAIMER = "PRIVILEGED AND CONFIDENTIAL INFORMATION: The information contained in this electronic transmission, and any documents attached hereto, may contain confidential information that is legally privileged and confidential. The information is intended only for the use of the recipient(s) named above. If you have received this electronic message in error, please delete the electronic message. Any disclosure, copying, distribution or the taking of any action in reliance on the contents of the information received in error is strictly prohibited. If you have received this e-mail in error please notify mail sender.";
+
+    function esc(s){
+      return (s||"")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;");
+    }
+
+    function generate(){
+      const name  = esc(el('name').value.trim());
+      let title   = esc(el('title').value.trim());
+      const phone = esc(el('phone').value.trim());
+      const email = esc(el('email').value.trim());
+
+      if(title) title = title.toUpperCase();
+
+      const logoTop = `<img src=\"https://www.frankbody.com/sig/sig_2.gif\" alt=\"frank body\" style=\"display:block; height:62px; border:0; outline:none; text-decoration:none; margin:0 0 36px 0\">`;
+
+      const nameHtml  = name  ? `<div style=\"font-family:'Courier Prime','Courier New',monospace; font-weight:700; letter-spacing:.18em; margin:0; line-height:1.2; font-size:18px\">${name.toUpperCase()}</div>` : '';
+      const titleHtml = title ? `<div style=\"font-family:'Courier Prime','Courier New',monospace; font-weight:700; letter-spacing:.2em; margin:6px 0 18px 0; line-height:1.15; font-size:14px\">${title}</div>` : '';
+
+      const phoneHtml = phone ? `<div style=\"font-family:'Courier Prime','Courier New',monospace; font-weight:400; letter-spacing:.12em; margin:0 0 4px 0; line-height:1.15; font-size:14px\"><a href=\"tel:${phone.replace(/\s+/g,'')}\" class=\"sig-link\">${phone}</a></div>` : '';
+      const emailHtml = email ? `<div style=\"font-family:'Courier Prime','Courier New',monospace; font-weight:400; letter-spacing:.12em; margin:0 0 18px 0; line-height:1.15; font-size:14px\"><a href=\"mailto:${email}\" class=\"sig-link\">${email}</a></div>` : '';
+
+      const addressHtml = `
+        <div style=\"font-family:'Courier Prime','Courier New',monospace; font-weight:400; letter-spacing:.12em; margin:0 0 4px 0; line-height:1.15; font-size:14px\">${FIXED.addressLine1}</div>
+        <div style=\"font-family:'Courier Prime','Courier New',monospace; font-weight:400; letter-spacing:.12em; margin:0 0 4px 0; line-height:1.15; font-size:14px\">${FIXED.addressLine2}</div>
+        <div style=\"font-family:'Courier Prime','Courier New',monospace; font-weight:400; letter-spacing:.12em; margin:0 0 18px 0; line-height:1.15; font-size:14px\"><a href=\"https://www.instagram.com/frank_bod\" class=\"sig-link\">${FIXED.handle}</a></div>`;
+
+      const websiteHtml = `<div style=\"font-family:'Courier Prime','Courier New',monospace; font-weight:700; letter-spacing:.18em; margin:0 0 18px 0; line-height:1.15; font-size:14px\"><a href=\"https://www.frankbody.com\" class=\"sig-link\">${FIXED.website}</a></div>`;
+
+      const disclaimerHtml = `<div style=\"font-family:'Courier Prime','Courier New',monospace; font-weight:400; margin:0; font-size:11px; font-style:italic; line-height:1.35; color:#3F2A2D; letter-spacing:.02em;\">${esc(DISCLAIMER)}</div>`;
+
+      const sig = `
+<!-- Start Frank Body Signature -->
+<table role=\"presentation\" cellspacing=\"0\" cellpadding=\"0\" style=\"border-collapse:collapse; font-family:'Courier Prime','Courier New',monospace; color:#3F2A2D; line-height:1;\">
+  <tr><td>${logoTop}</td></tr>
+  <tr><td>
+    ${nameHtml}
+    ${titleHtml}
+    ${phoneHtml}
+    ${emailHtml}
+    ${addressHtml}
+    ${websiteHtml}
+  </td></tr>
+  <tr><td>${disclaimerHtml}</td></tr>
+</table>
+<!-- End Frank Body Signature -->`.trim();
+
+      el('sigPreview').innerHTML = sig;
+    }
+
+    function copyRich(){
+      const node = el('sigPreview');
+      if(!node.innerHTML.trim()){ generate(); }
+      const sel = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(node);
+      sel.removeAllRanges(); sel.addRange(range);
+      try { document.execCommand('copy'); alert('Signature copied.'); }
+      catch(e) { alert('Copy failed.'); }
+      sel.removeAllRanges();
+    }
+
+    el('gen').addEventListener('click', generate);
+    el('copyRich').addEventListener('click', copyRich);
+    window.addEventListener('DOMContentLoaded', generate);
+  </script>
+</body>
+</html>
