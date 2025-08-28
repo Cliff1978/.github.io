@@ -90,8 +90,23 @@
       const logoTop = `<img src=\"https://www.frankbody.com/sig/sig_2.gif\" alt=\"frank body\" style=\"display:block; height:62px; border:0; outline:none; text-decoration:none; margin:0 0 36px 0\">`;
 
       const nameHtml  = name  ? `<div style=\"font-family:'Courier Prime',Courier,monospace; font-weight:700; letter-spacing:.18em; margin:0; line-height:1.2; font-size:17px\">${name.toUpperCase()}</div>` : '';
-      const titleHtml = title ? `<div style=\"font-family:'Courier Prime',Courier,monospace; font-weight:400; letter-spacing:.2em; margin:6px 0 18px 0; line-height:1.15; font-size:13px\">${title}</div>` : '';
-      const phoneHtml = phone ? `<div style=\"font-family:'Courier Prime',Courier,monospace; font-weight:400; letter-spacing:.12em; margin:0 0 6px 0; line-height:1.15; font-size:13px\"><a href=\"tel:${phone.replace(/\s+/g,'')}\" class=\"sig-link\">${phone}</a></div>` : '';
+      let titleHtml = '';
+      let phoneHtml = '';
+
+      if(title) {
+        titleHtml = `<div style=\"font-family:'Courier Prime',Courier,monospace; font-weight:400; letter-spacing:.2em; margin:6px 0 18px 0; line-height:1.15; font-size:13px\">${title}</div>`;
+      }
+
+      if(phone) {
+        // If no title but phone is present, add 18px spacing from name
+        let marginTop;
+        if(!title) {
+          marginTop = "margin:18px 0 6px 0;";
+        } else {
+          marginTop = "margin:0 0 6px 0;";
+        }
+        phoneHtml = `<div style=\"font-family:'Courier Prime',Courier,monospace; font-weight:400; letter-spacing:.12em; ${marginTop} line-height:1.15; font-size:13px\"><a href=\"tel:${phone.replace(/\s+/g,'')}\" class=\"sig-link\">${phone}</a></div>`;
+      }
 
       const emailTopMargin = (!title && !phone) ? "margin:12px 0 18px 0;" : "margin:0 0 18px 0;";
       const emailHtml = email ? `<div style=\"font-family:'Courier Prime',Courier,monospace; font-weight:400; letter-spacing:.12em; ${emailTopMargin} line-height:1.15; font-size:13px\"><a href=\"mailto:${email}\" class=\"sig-link\">${email}</a></div>` : '';
